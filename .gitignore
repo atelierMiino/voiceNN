@@ -6,8 +6,6 @@
 *.db
 *.exe
 *.pdb
-.vs/voiceNN/v17/.suo
-.vs/voiceNN/project-colors.json
 *.vcxproj
 *.filters
 *.user
@@ -18,3 +16,5 @@
 *.tlog
 *.iobj
 *.ipdb
+*.sln
+*.vs
