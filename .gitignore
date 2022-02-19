@@ -1,0 +1,10 @@
+
+*.bin
+*.db-wal
+*.opendb
+*.ipch
+*.db-shm
+*.db
+*.exe
+*.pdb
+.vs/voiceNN/v17/.suo
