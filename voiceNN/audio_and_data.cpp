@@ -5,6 +5,7 @@
 
 #include "voicenn.h"
 
+// aad stands for audio and data
 namespace aad {
 	unsigned int largest_file_sample = 0;
 

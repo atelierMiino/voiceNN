@@ -8,41 +8,54 @@ int main() {
 
 	aad::from_audio_compile_dataset();
 
-	// neural network
-	int numInput = aad::get_largest_file_sample();
-	int numHiddenNeuron = 0;
-	int numTargetVar = 0;
+	//	Real Data		-->		Sample		--+
+	//										  |
+	//										  V				  +-->	Discriminator Loss
+	//														  |
+	//	Random Noise					DISCRIMINATOR		--+
+	//		 |							(Deep Convo Net)	--+
+	//		 |												  |
+	//		 |								  A				  +-->	Generator Loss
+	//		 V								  |
+	// GENERATOR NN		-->		Sample		--+
+	// (Deconvo Net)
 
-	// Discriminator network:
-	// training: real data
-	// input: generatorNN output
-	// output: predicted voice
-	OpenNN::NeuralNetwork voiceNNDiscriminator(\
+	// Discriminator network input
+	int d_num_input = aad::get_largest_file_sample();
+	int d_num_hidden_neuron;
+	int d_num_output;
+
+	OpenNN::NeuralNetwork voice_discriminator(\
 		OpenNN::NeuralNetwork::ProjectType::Classification,\
-		{numInput, numHiddenNeuron, numTargetVar}\
+		{d_num_input, d_num_hidden_neuron, d_num_output}\
 		);
+	voice_discriminator.set_inputs_names();
+	voice_discriminator.set_outputs_names();
+	OpenNN::ScalingLayer* d_SL_pointer = voice_discriminator.get_scaling_layer_pointer();
+	d_SL_pointer->set_descriptives();
+	d_SL_pointer->set_scalers();
+
+	// Generative network input
+	int g_num_input;
+	int g_num_hidden_neuron;
+	int g_num_output;
 
 	// Generative network:
-	// training:
-	// input: noise
 	// output: imitation voice (approximation)
-	OpenNN::NeuralNetwork voiceNNGenerator(\
+	OpenNN::NeuralNetwork voice_generator(\
 		OpenNN::NeuralNetwork::ProjectType::Approximation,\
-		{numInput, numHiddenNeuron, numTargetVar}\
-		);
+		{g_num_input, g_num_hidden_neuron, g_num_output}\
+	);
+	voice_generator.set_inputs_names();
+	voice_generator.set_outputs_names();
 
 	// data set
 
-	OpenNN::DataSet voiceDataSetReal(FILESYSTEM_NOISE_PATH, ',', true);
-	OpenNN::DataSet voiceDataSetGenerOut(FILESYSTEM_NOISE_PATH, ',', true);
-	// Alternatively, can use these functions to init data set
-	// OpenNN::DataSet voiceDataSet;
-	// voiceDataSet.set_data_file_name(DATA_SET_FILE_PATH);
-	// voiceDataSet.set_separator("Comma");
-	// voiceDataSet.load_data();
+	OpenNN::DataSet voice_dataset_real(FILESYSTEM_DATA_PATH, ',', true);
+	OpenNN::DataSet voice_dataset_generator_out(FILESYSTEM_GENERATOR_PATH, ',', true);
 
 	// training strategy
 
-	OpenNN::TrainingStrategy voiceNNDiscrimTS(&voiceNNDiscriminator, &voiceDataSetReal);
-	OpenNN::TrainingStrategy voiceNNGenerTS(&voiceNNGenerator, &voiceDataSetGenerOut);
+	OpenNN::TrainingStrategy voiceNNDiscrimTS(&voice_discriminator, &voice_dataset_real);
+	OpenNN::TrainingStrategy voiceNNGenerTS(&voice_generator, &voice_dataset_generator_out);
 }
