@@ -29,8 +29,7 @@ int main() {
 		OpenNN::NeuralNetwork::ProjectType::Classification,\
 		{d_num_input, d_num_hidden_neuron, d_num_output}\
 		);
-	voice_discriminator.set_inputs_names();
-	voice_discriminator.set_outputs_names();
+
 	OpenNN::ScalingLayer* d_SL_pointer = voice_discriminator.get_scaling_layer_pointer();
 	d_SL_pointer->set_descriptives();
 	d_SL_pointer->set_scalers();
@@ -46,8 +45,6 @@ int main() {
 		OpenNN::NeuralNetwork::ProjectType::Approximation,\
 		{g_num_input, g_num_hidden_neuron, g_num_output}\
 	);
-	voice_generator.set_inputs_names();
-	voice_generator.set_outputs_names();
 
 	// data set
 
